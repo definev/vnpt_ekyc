@@ -45,7 +45,7 @@ class PigeonEkycResponse {
   kotlinOut:
       'android/src/main/kotlin/com/definev/vnpt_ekyc/VnptEkycPigeon.g.kt',
   kotlinOptions: KotlinOptions(),
-  swiftOut: 'ios/Runner/VnptEkycPigeon.g.swift',
+  swiftOut: 'ios/Classes/VnptEkycPigeon.g.swift',
   swiftOptions: SwiftOptions(),
   dartPackageName: 'vnpt_ekyc_pigeon',
 ))

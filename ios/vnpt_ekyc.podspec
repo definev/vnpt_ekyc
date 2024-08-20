@@ -21,6 +21,11 @@ A new Flutter plugin project.
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES', 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'i386' }
   s.swift_version = '5.0'
 
+  # Dependencies
+  s.preserve_paths = 'Frameworks/eKYCLib.xcframework/**/*', 'Frameworks/ICSdkEKYC.xcframework/**/*'
+  s.xcconfig = { 'OTHER_LDFLAGS' => '-framework eKYCLib -framework ICSdkEKYC' }
+  s.vendored_frameworks = 'Frameworks/eKYCLib.xcframework', 'Frameworks/ICSdkEKYC.xcframework'
+
   # If your plugin requires a privacy manifest, for example if it uses any
   # required reason APIs, update the PrivacyInfo.xcprivacy file to describe your
   # plugin's privacy impact, and then uncomment this line. For more information,
