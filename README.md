@@ -1,15 +1,35 @@
 # vnpt_ekyc
 
-A new Flutter plugin project.
+A common plugin for using VNPT_EKYC SDK in Flutter.
 
 ## Getting Started
 
-This project is a starting point for a Flutter
-[plug-in package](https://flutter.dev/to/develop-plugins),
-a specialized package that includes platform-specific implementation code for
-Android and/or iOS.
+Due to limitations of AGP, you need to import both `aar` file in plugin and app.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### App setup
 
+1. Add the following to your `android/build.gradle` file:
+
+```gradle
+allprojects {
+    repositories {
+        google()
+        jcenter()
+        flatDir {
+            dirs "libs"
+        }
+    }
+}
+```
+
+Add `ekyc_sdk.aar` to `android/app/libs` folder.
+
+2. Add the following to your `android/app/build.gradle` file:
+
+```gradle
+dependencies {
+    implementation fileTree(dir: "libs", include: ["*.jar"])
+}
+```
+
+You are ready to go.
