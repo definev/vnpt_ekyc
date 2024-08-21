@@ -1,6 +1,8 @@
 import Flutter
-import ICSdkEKYC
 import UIKit
+
+#if !targetEnvironment(simulator)
+import ICSdkEKYC
 import eKYCLib
 
 public class VnptEkycPlugin: NSObject, FlutterPlugin, VnptEkycPigeon, ICEkycCameraDelegate {
@@ -101,3 +103,24 @@ public class VnptEkycPlugin: NSObject, FlutterPlugin, VnptEkycPigeon, ICEkycCame
         ekycCompletion = nil
     }
 }
+
+#else
+
+public class VnptEkycPlugin: NSObject, FlutterPlugin, VnptEkycPigeon {
+    public static func register(with registrar: FlutterPluginRegistrar) {
+    }
+
+
+    func ekyc(
+        accessToken: String,
+        tokenId: String,
+        tokenKey: String, language: String,
+        completion: @escaping (
+            Result<PigeonEkycResponse, any Error>
+        ) -> Void
+    ) {
+        completion(Result.failure(PigeonError(code: "404", message: "EKYC not implemented in simulator", details: nil)))
+    }
+}
+
+#endif
