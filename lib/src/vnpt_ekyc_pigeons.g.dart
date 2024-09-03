@@ -15,130 +15,9 @@ PlatformException _createConnectionError(String channelName) {
   );
 }
 
-class PigeonEkycData {
-  PigeonEkycData({
-    required this.name,
-    required this.dob,
-    required this.province,
-    required this.district,
-    required this.ward,
-    required this.citizenId,
-    required this.issueBy,
-    required this.issueDate,
-    required this.address,
-    required this.gender,
-    required this.prob,
-  });
-
-  String name;
-
-  String dob;
-
-  String province;
-
-  String district;
-
-  String ward;
-
-  String citizenId;
-
-  String issueBy;
-
-  String issueDate;
-
-  String address;
-
-  String gender;
-
-  double prob;
-
-  Object encode() {
-    return <Object?>[
-      name,
-      dob,
-      province,
-      district,
-      ward,
-      citizenId,
-      issueBy,
-      issueDate,
-      address,
-      gender,
-      prob,
-    ];
-  }
-
-  static PigeonEkycData decode(Object result) {
-    result as List<Object?>;
-    return PigeonEkycData(
-      name: result[0]! as String,
-      dob: result[1]! as String,
-      province: result[2]! as String,
-      district: result[3]! as String,
-      ward: result[4]! as String,
-      citizenId: result[5]! as String,
-      issueBy: result[6]! as String,
-      issueDate: result[7]! as String,
-      address: result[8]! as String,
-      gender: result[9]! as String,
-      prob: result[10]! as double,
-    );
-  }
-}
-
-class PigeonEkycResponse {
-  PigeonEkycResponse({
-    this.error,
-    this.data,
-  });
-
-  String? error;
-
-  PigeonEkycData? data;
-
-  Object encode() {
-    return <Object?>[
-      error,
-      data,
-    ];
-  }
-
-  static PigeonEkycResponse decode(Object result) {
-    result as List<Object?>;
-    return PigeonEkycResponse(
-      error: result[0] as String?,
-      data: result[1] as PigeonEkycData?,
-    );
-  }
-}
-
 
 class _PigeonCodec extends StandardMessageCodec {
   const _PigeonCodec();
-  @override
-  void writeValue(WriteBuffer buffer, Object? value) {
-    if (value is PigeonEkycData) {
-      buffer.putUint8(129);
-      writeValue(buffer, value.encode());
-    } else     if (value is PigeonEkycResponse) {
-      buffer.putUint8(130);
-      writeValue(buffer, value.encode());
-    } else {
-      super.writeValue(buffer, value);
-    }
-  }
-
-  @override
-  Object? readValueOfType(int type, ReadBuffer buffer) {
-    switch (type) {
-      case 129: 
-        return PigeonEkycData.decode(readValue(buffer)!);
-      case 130: 
-        return PigeonEkycResponse.decode(readValue(buffer)!);
-      default:
-        return super.readValueOfType(type, buffer);
-    }
-  }
 }
 
 class VnptEkycPigeon {
@@ -154,7 +33,7 @@ class VnptEkycPigeon {
 
   final String pigeonVar_messageChannelSuffix;
 
-  Future<PigeonEkycResponse> ekyc(String accessToken, String tokenId, String tokenKey, {String language = 'vi',}) async {
+  Future<Map<String?, Object?>> ekyc(String accessToken, String tokenId, String tokenKey, {String language = 'vi',}) async {
     final String pigeonVar_channelName = 'dev.flutter.pigeon.vnpt_ekyc_pigeon.VnptEkycPigeon.ekyc$pigeonVar_messageChannelSuffix';
     final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
@@ -177,7 +56,7 @@ class VnptEkycPigeon {
         message: 'Host platform returned null value for non-null return value.',
       );
     } else {
-      return (pigeonVar_replyList[0] as PigeonEkycResponse?)!;
+      return (pigeonVar_replyList[0] as Map<Object?, Object?>?)!.cast<String?, Object?>();
     }
   }
 }

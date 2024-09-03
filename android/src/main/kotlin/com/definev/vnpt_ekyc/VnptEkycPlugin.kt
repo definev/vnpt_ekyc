@@ -1,7 +1,5 @@
 package com.definev.vnpt_ekyc
 
-import PigeonEkycData
-import PigeonEkycResponse
 import VnptEkycPigeon
 import android.app.Activity
 import android.content.Intent
@@ -29,7 +27,7 @@ class VnptEkycPlugin : FlutterPlugin, ActivityAware, ActivityResultListener, Vnp
     private lateinit var channel: MethodChannel
     var activity: Activity? = null
 
-    var ekycCompletionCallback: ((Result<PigeonEkycResponse>) -> Unit)? = null
+    var ekycCompletionCallback: ((Result<Map<String, Any?>>) -> Unit)? = null
 
     override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
         VnptEkycPigeon.setUp(flutterPluginBinding.binaryMessenger, this)
@@ -73,7 +71,7 @@ class VnptEkycPlugin : FlutterPlugin, ActivityAware, ActivityResultListener, Vnp
         tokenId: String,
         tokenKey: String,
         language: String,
-        callback: (Result<PigeonEkycResponse>) -> Unit
+        callback: (Result<Map<String, Any?>>) -> Unit
     ) {
         val intent = Intent(
             this.activity,
@@ -121,7 +119,7 @@ class VnptEkycPlugin : FlutterPlugin, ActivityAware, ActivityResultListener, Vnp
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean {
-        val result: Result<PigeonEkycResponse>?
+        val result: Result<Map<String, Any?>>?
         if (requestCode == 1 && resultCode == FlutterFragmentActivity.RESULT_OK) {
             val strDataInfo = data?.getStringExtra(KeyResultConstants.INFO_RESULT)
             val strDataCompare = data?.getStringExtra(KeyResultConstants.COMPARE_RESULT)
@@ -129,33 +127,19 @@ class VnptEkycPlugin : FlutterPlugin, ActivityAware, ActivityResultListener, Vnp
             println("strDataInfo: $strDataInfo")
             println("strDataCompare: $strDataCompare")
 
-//                val objectInfo = org.json.JSONObject(strDataInfo).toMap()
-//                val objectCompare = org.json.JSONObject(strDataCompare).toMap()
-
-
             if (strDataInfo == null || strDataCompare == null) {
                 result = Result.success(
-                    PigeonEkycResponse(
-                        error = "Data is null",
+                    mapOf(
+                        "data_info" to strDataInfo,
+                        "data_compare" to strDataCompare,
+                        "error" to "data is null",
                     )
                 )
             } else {
                 result = Result.success(
-                    PigeonEkycResponse(
-                        error = null,
-                        data = PigeonEkycData(
-                            name = "Success",
-                            dob = "Success",
-                            province = "",
-                            district = "",
-                            ward = "",
-                            citizenId = "",
-                            issueBy = "",
-                            issueDate = "",
-                            address = "",
-                            gender = "",
-                            prob = 0.9
-                        )
+                    mapOf(
+                        "data_info" to strDataInfo,
+                        "data_compare" to strDataCompare,
                     )
                 )
             }

@@ -52,7 +52,7 @@ class HomeView extends StatelessWidget {
                 );
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text(data.data?.name ?? data.error ?? 'No data'),
+                    content: Text(data.toString()),
                   ),
                 );
               },

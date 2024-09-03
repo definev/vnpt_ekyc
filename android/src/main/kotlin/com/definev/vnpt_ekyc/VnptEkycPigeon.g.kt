@@ -42,110 +42,19 @@ class FlutterError (
   override val message: String? = null,
   val details: Any? = null
 ) : Throwable()
-
-/** Generated class from Pigeon that represents data sent in messages. */
-data class PigeonEkycData (
-  val name: String,
-  val dob: String,
-  val province: String,
-  val district: String,
-  val ward: String,
-  val citizenId: String,
-  val issueBy: String,
-  val issueDate: String,
-  val address: String,
-  val gender: String,
-  val prob: Double
-)
- {
-  companion object {
-    fun fromList(pigeonVar_list: List<Any?>): PigeonEkycData {
-      val name = pigeonVar_list[0] as String
-      val dob = pigeonVar_list[1] as String
-      val province = pigeonVar_list[2] as String
-      val district = pigeonVar_list[3] as String
-      val ward = pigeonVar_list[4] as String
-      val citizenId = pigeonVar_list[5] as String
-      val issueBy = pigeonVar_list[6] as String
-      val issueDate = pigeonVar_list[7] as String
-      val address = pigeonVar_list[8] as String
-      val gender = pigeonVar_list[9] as String
-      val prob = pigeonVar_list[10] as Double
-      return PigeonEkycData(name, dob, province, district, ward, citizenId, issueBy, issueDate, address, gender, prob)
-    }
-  }
-  fun toList(): List<Any?> {
-    return listOf(
-      name,
-      dob,
-      province,
-      district,
-      ward,
-      citizenId,
-      issueBy,
-      issueDate,
-      address,
-      gender,
-      prob,
-    )
-  }
-}
-
-/** Generated class from Pigeon that represents data sent in messages. */
-data class PigeonEkycResponse (
-  val error: String? = null,
-  val data: PigeonEkycData? = null
-)
- {
-  companion object {
-    fun fromList(pigeonVar_list: List<Any?>): PigeonEkycResponse {
-      val error = pigeonVar_list[0] as String?
-      val data = pigeonVar_list[1] as PigeonEkycData?
-      return PigeonEkycResponse(error, data)
-    }
-  }
-  fun toList(): List<Any?> {
-    return listOf(
-      error,
-      data,
-    )
-  }
-}
 private object VnptEkycPigeonPigeonCodec : StandardMessageCodec() {
   override fun readValueOfType(type: Byte, buffer: ByteBuffer): Any? {
-    return when (type) {
-      129.toByte() -> {
-        return (readValue(buffer) as? List<Any?>)?.let {
-          PigeonEkycData.fromList(it)
-        }
-      }
-      130.toByte() -> {
-        return (readValue(buffer) as? List<Any?>)?.let {
-          PigeonEkycResponse.fromList(it)
-        }
-      }
-      else -> super.readValueOfType(type, buffer)
-    }
+    return     super.readValueOfType(type, buffer)
   }
   override fun writeValue(stream: ByteArrayOutputStream, value: Any?)   {
-    when (value) {
-      is PigeonEkycData -> {
-        stream.write(129)
-        writeValue(stream, value.toList())
-      }
-      is PigeonEkycResponse -> {
-        stream.write(130)
-        writeValue(stream, value.toList())
-      }
-      else -> super.writeValue(stream, value)
-    }
+    super.writeValue(stream, value)
   }
 }
 
 
 /** Generated interface from Pigeon that represents a handler of messages from Flutter. */
 interface VnptEkycPigeon {
-  fun ekyc(accessToken: String, tokenId: String, tokenKey: String, language: String, callback: (Result<PigeonEkycResponse>) -> Unit)
+  fun ekyc(accessToken: String, tokenId: String, tokenKey: String, language: String, callback: (Result<Map<String, Any?>>) -> Unit)
 
   companion object {
     /** The codec used by VnptEkycPigeon. */
@@ -165,7 +74,7 @@ interface VnptEkycPigeon {
             val tokenIdArg = args[1] as String
             val tokenKeyArg = args[2] as String
             val languageArg = args[3] as String
-            api.ekyc(accessTokenArg, tokenIdArg, tokenKeyArg, languageArg) { result: Result<PigeonEkycResponse> ->
+            api.ekyc(accessTokenArg, tokenIdArg, tokenKeyArg, languageArg) { result: Result<Map<String, Any?>> ->
               val error = result.exceptionOrNull()
               if (error != null) {
                 reply.reply(wrapError(error))

@@ -1,6 +1,5 @@
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
-import 'src/vnpt_ekyc_pigeons.g.dart';
 import 'vnpt_ekyc_method_channel.dart';
 
 abstract class VnptEkycPlatform extends PlatformInterface {
@@ -24,7 +23,7 @@ abstract class VnptEkycPlatform extends PlatformInterface {
     _instance = instance;
   }
 
-  Future<PigeonEkycResponse> extractEKYC(
+  Future<Map<String?, dynamic>> extractEKYC(
     String accessToken,
     String tokenId,
     String tokenKey, {

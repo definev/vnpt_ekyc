@@ -64,117 +64,10 @@ private func nilOrValue<T>(_ value: Any?) -> T? {
   return value as! T?
 }
 
-/// Generated class from Pigeon that represents data sent in messages.
-struct PigeonEkycData {
-  var name: String
-  var dob: String
-  var province: String
-  var district: String
-  var ward: String
-  var citizenId: String
-  var issueBy: String
-  var issueDate: String
-  var address: String
-  var gender: String
-  var prob: Double
-
-
-
-  // swift-format-ignore: AlwaysUseLowerCamelCase
-  static func fromList(_ pigeonVar_list: [Any?]) -> PigeonEkycData? {
-    let name = pigeonVar_list[0] as! String
-    let dob = pigeonVar_list[1] as! String
-    let province = pigeonVar_list[2] as! String
-    let district = pigeonVar_list[3] as! String
-    let ward = pigeonVar_list[4] as! String
-    let citizenId = pigeonVar_list[5] as! String
-    let issueBy = pigeonVar_list[6] as! String
-    let issueDate = pigeonVar_list[7] as! String
-    let address = pigeonVar_list[8] as! String
-    let gender = pigeonVar_list[9] as! String
-    let prob = pigeonVar_list[10] as! Double
-
-    return PigeonEkycData(
-      name: name,
-      dob: dob,
-      province: province,
-      district: district,
-      ward: ward,
-      citizenId: citizenId,
-      issueBy: issueBy,
-      issueDate: issueDate,
-      address: address,
-      gender: gender,
-      prob: prob
-    )
-  }
-  func toList() -> [Any?] {
-    return [
-      name,
-      dob,
-      province,
-      district,
-      ward,
-      citizenId,
-      issueBy,
-      issueDate,
-      address,
-      gender,
-      prob,
-    ]
-  }
-}
-
-/// Generated class from Pigeon that represents data sent in messages.
-struct PigeonEkycResponse {
-  var error: String? = nil
-  var data: PigeonEkycData? = nil
-
-
-
-  // swift-format-ignore: AlwaysUseLowerCamelCase
-  static func fromList(_ pigeonVar_list: [Any?]) -> PigeonEkycResponse? {
-    let error: String? = nilOrValue(pigeonVar_list[0])
-    let data: PigeonEkycData? = nilOrValue(pigeonVar_list[1])
-
-    return PigeonEkycResponse(
-      error: error,
-      data: data
-    )
-  }
-  func toList() -> [Any?] {
-    return [
-      error,
-      data,
-    ]
-  }
-}
-
 private class VnptEkycPigeonPigeonCodecReader: FlutterStandardReader {
-  override func readValue(ofType type: UInt8) -> Any? {
-    switch type {
-    case 129:
-      return PigeonEkycData.fromList(self.readValue() as! [Any?])
-    case 130:
-      return PigeonEkycResponse.fromList(self.readValue() as! [Any?])
-    default:
-      return super.readValue(ofType: type)
-    }
-  }
 }
 
 private class VnptEkycPigeonPigeonCodecWriter: FlutterStandardWriter {
-  override func writeValue(_ value: Any) {
-    if let value = value as? PigeonEkycData {
-      super.writeByte(129)
-      super.writeValue(value.toList())
-    } else if let value = value as? PigeonEkycResponse {
-      super.writeByte(130)
-      super.writeValue(value.toList())
-    } else {
-      super.writeValue(value)
-    }
-  }
 }
 
 private class VnptEkycPigeonPigeonCodecReaderWriter: FlutterStandardReaderWriter {
@@ -194,7 +87,7 @@ class VnptEkycPigeonPigeonCodec: FlutterStandardMessageCodec, @unchecked Sendabl
 
 /// Generated protocol from Pigeon that represents a handler of messages from Flutter.
 protocol VnptEkycPigeon {
-  func ekyc(accessToken: String, tokenId: String, tokenKey: String, language: String, completion: @escaping (Result<PigeonEkycResponse, Error>) -> Void)
+  func ekyc(accessToken: String, tokenId: String, tokenKey: String, language: String, completion: @escaping (Result<[String: Any?], Error>) -> Void)
 }
 
 /// Generated setup class from Pigeon to handle messages through the `binaryMessenger`.
