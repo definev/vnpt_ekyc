@@ -33,7 +33,7 @@ class VnptEkycPigeon {
 
   final String pigeonVar_messageChannelSuffix;
 
-  Future<Map<String?, Object?>> ekyc(String accessToken, String tokenId, String tokenKey, {String language = 'vi',}) async {
+  Future<Map<String?, String?>> ekyc(String accessToken, String tokenId, String tokenKey, {String language = 'vi',}) async {
     final String pigeonVar_channelName = 'dev.flutter.pigeon.vnpt_ekyc_pigeon.VnptEkycPigeon.ekyc$pigeonVar_messageChannelSuffix';
     final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
@@ -56,7 +56,7 @@ class VnptEkycPigeon {
         message: 'Host platform returned null value for non-null return value.',
       );
     } else {
-      return (pigeonVar_replyList[0] as Map<Object?, Object?>?)!.cast<String?, Object?>();
+      return (pigeonVar_replyList[0] as Map<Object?, Object?>?)!.cast<String?, String?>();
     }
   }
 }

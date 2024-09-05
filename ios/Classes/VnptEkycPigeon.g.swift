@@ -87,7 +87,7 @@ class VnptEkycPigeonPigeonCodec: FlutterStandardMessageCodec, @unchecked Sendabl
 
 /// Generated protocol from Pigeon that represents a handler of messages from Flutter.
 protocol VnptEkycPigeon {
-  func ekyc(accessToken: String, tokenId: String, tokenKey: String, language: String, completion: @escaping (Result<[String: Any?], Error>) -> Void)
+  func ekyc(accessToken: String, tokenId: String, tokenKey: String, language: String, completion: @escaping (Result<[String: String?], Error>) -> Void)
 }
 
 /// Generated setup class from Pigeon to handle messages through the `binaryMessenger`.

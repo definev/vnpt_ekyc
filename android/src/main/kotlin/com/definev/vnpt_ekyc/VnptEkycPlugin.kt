@@ -130,9 +130,9 @@ class VnptEkycPlugin : FlutterPlugin, ActivityAware, ActivityResultListener, Vnp
             if (strDataInfo == null || strDataCompare == null) {
                 result = Result.success(
                     mapOf(
-                        "data_info" to strDataInfo,
-                        "data_compare" to strDataCompare,
-                        "error" to "data is null",
+                        "data_info" to null,
+                        "data_compare" to null,
+                        "error" to "cancel by user",
                     )
                 )
             } else {

@@ -7,7 +7,7 @@ class MethodChannelVnptEkyc extends VnptEkycPlatform {
   final vnptEkycPigeon = VnptEkycPigeon();
 
   @override
-  Future<Map<String?, dynamic>> extractEKYC(
+  Future<Map<String?, String?>> extractEKYC(
     String accessToken,
     String tokenId,
     String tokenKey, {

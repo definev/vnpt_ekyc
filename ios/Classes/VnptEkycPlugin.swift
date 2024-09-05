@@ -6,13 +6,12 @@ import UIKit
     import eKYCLib
 
     public class VnptEkycPlugin: NSObject, FlutterPlugin, VnptEkycPigeon, ICEkycCameraDelegate {
-
         public static func register(with registrar: FlutterPluginRegistrar) {
             let instance = VnptEkycPlugin()
             VnptEkycPigeonSetup.setUp(binaryMessenger: registrar.messenger(), api: instance)
         }
 
-        var ekycCompletion: ((Result<[String: Any?], any Error>) -> Void)?
+        var ekycCompletion: ((Result<[String: String?], any Error>) -> Void)?
 
         func viewController(with window: UIWindow?) -> UIViewController? {
             var windowToUse = window
@@ -37,7 +36,7 @@ import UIKit
             tokenId: String,
             tokenKey: String, language: String,
             completion: @escaping (
-                Result<[String: Any?], any Error>
+                Result<[String: String?], any Error>
             ) -> Void
         ) {
 
@@ -88,7 +87,7 @@ import UIKit
         }
 
         public func icEkycCameraClosed(with type: ScreenType) {
-            ekycCompletion?(Result.success(["error": "cancel"]))
+            ekycCompletion?(Result.success(["error": "cancel by user"]))
             ekycCompletion = nil
         }
     }

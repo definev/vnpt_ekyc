@@ -52,7 +52,7 @@ class PigeonEkycResponse {
 @HostApi()
 abstract class VnptEkycPigeon {
   @async
-  Map<String, Object?> ekyc(
+  Map<String, String?> ekyc(
     String accessToken,
     String tokenId,
     String tokenKey,{

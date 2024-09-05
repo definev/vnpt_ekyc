@@ -23,7 +23,7 @@ abstract class VnptEkycPlatform extends PlatformInterface {
     _instance = instance;
   }
 
-  Future<Map<String?, dynamic>> extractEKYC(
+  Future<Map<String?, String?>> extractEKYC(
     String accessToken,
     String tokenId,
     String tokenKey, {

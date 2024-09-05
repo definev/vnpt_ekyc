@@ -54,7 +54,7 @@ private object VnptEkycPigeonPigeonCodec : StandardMessageCodec() {
 
 /** Generated interface from Pigeon that represents a handler of messages from Flutter. */
 interface VnptEkycPigeon {
-  fun ekyc(accessToken: String, tokenId: String, tokenKey: String, language: String, callback: (Result<Map<String, Any?>>) -> Unit)
+  fun ekyc(accessToken: String, tokenId: String, tokenKey: String, language: String, callback: (Result<Map<String, String?>>) -> Unit)
 
   companion object {
     /** The codec used by VnptEkycPigeon. */
@@ -74,7 +74,7 @@ interface VnptEkycPigeon {
             val tokenIdArg = args[1] as String
             val tokenKeyArg = args[2] as String
             val languageArg = args[3] as String
-            api.ekyc(accessTokenArg, tokenIdArg, tokenKeyArg, languageArg) { result: Result<Map<String, Any?>> ->
+            api.ekyc(accessTokenArg, tokenIdArg, tokenKeyArg, languageArg) { result: Result<Map<String, String?>> ->
               val error = result.exceptionOrNull()
               if (error != null) {
                 reply.reply(wrapError(error))
