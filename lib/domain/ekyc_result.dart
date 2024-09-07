@@ -46,18 +46,14 @@ class EkycResponse {
 
   static EkycResponse parseFromNative(Map<String?, String?> raw) {
     if (raw['error'] case String error) {
-      return const EkycResponse(
-        errorCode: EkycErrorCode.unknown,
-      );
+      return EkycResponse(errorCode: error);
     }
 
     final dataInfo = raw['data_info'];
     final dataCompare = raw['data_compare'];
 
     if (dataInfo == null || dataCompare == null) {
-      return const EkycResponse(
-        errorCode: EkycErrorCode.userCancel,
-      );
+      return EkycResponse(errorCode: EkycErrorCode.userCancel.name);
     }
 
     final dataInfoMap = jsonDecode(dataInfo) as Map<String, dynamic>;
@@ -67,10 +63,7 @@ class EkycResponse {
     double prob = dataCompareMap['prob']?.toDouble() ?? 0;
 
     if (prob < 90.0) {
-      return const EkycResponse(
-        data: null,
-        errorCode: EkycErrorCode.faceNotMatch,
-      );
+      return EkycResponse(errorCode: EkycErrorCode.faceNotMatch.name);
     }
 
     dynamic object = dataInfoMap['object'];
@@ -80,24 +73,15 @@ class EkycResponse {
     );
 
     if (object['id_fake_warning'] == 'yes') {
-      return const EkycResponse(
-        data: null,
-        errorCode: EkycErrorCode.idFake,
-      );
+      return EkycResponse(errorCode: EkycErrorCode.idFake.name);
     }
 
     if (object['expire_warning'] == 'yes') {
-      return const EkycResponse(
-        data: null,
-        errorCode: EkycErrorCode.idExpired,
-      );
+      return EkycResponse(errorCode: EkycErrorCode.idExpired.name);
     }
 
     if (object['back_expire_warning'] == 'yes') {
-      return const EkycResponse(
-        data: null,
-        errorCode: EkycErrorCode.idBackExpired,
-      );
+      return EkycResponse(errorCode: EkycErrorCode.idBackExpired.name);
     }
 
     dynamic addressObject =
@@ -123,7 +107,7 @@ class EkycResponse {
   }
 
   final EkycData? data;
-  final EkycErrorCode? errorCode;
+  final String? errorCode;
 }
 
 enum EkycErrorCode {
@@ -133,5 +117,4 @@ enum EkycErrorCode {
   idExpired,
   idBackExpired,
   userCancel,
-  unknown,
 }

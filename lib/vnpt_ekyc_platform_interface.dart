@@ -1,4 +1,5 @@
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
+import 'package:vnpt_ekyc/domain/ekyc_result.dart';
 
 import 'vnpt_ekyc_method_channel.dart';
 
@@ -23,7 +24,7 @@ abstract class VnptEkycPlatform extends PlatformInterface {
     _instance = instance;
   }
 
-  Future<Map<String?, String?>> extractEKYC(
+  Future<EkycResponse> extractEKYC(
     String accessToken,
     String tokenId,
     String tokenKey, {

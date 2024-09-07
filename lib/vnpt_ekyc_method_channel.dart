@@ -1,3 +1,5 @@
+import 'package:vnpt_ekyc/domain/ekyc_result.dart';
+
 import 'src/vnpt_ekyc_pigeons.g.dart';
 import 'vnpt_ekyc_platform_interface.dart';
 
@@ -7,16 +9,18 @@ class MethodChannelVnptEkyc extends VnptEkycPlatform {
   final vnptEkycPigeon = VnptEkycPigeon();
 
   @override
-  Future<Map<String?, String?>> extractEKYC(
+  Future<EkycResponse> extractEKYC(
     String accessToken,
     String tokenId,
     String tokenKey, {
     String language = 'vi',
-  }) =>
-      vnptEkycPigeon.ekyc(
-        accessToken,
-        tokenId,
-        tokenKey,
-        language: language,
-      );
+  }) async {
+    final raw = await vnptEkycPigeon.ekyc(
+      accessToken,
+      tokenId,
+      tokenKey,
+      language: language,
+    );
+    return EkycResponse.parseFromNative(raw);
+  }
 }
