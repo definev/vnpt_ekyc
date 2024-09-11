@@ -5,10 +5,9 @@ import android.app.Activity
 import android.content.Intent
 import android.content.res.Configuration
 import androidx.core.app.ActivityCompat.startActivityForResult
-import com.vnptit.idg.sdk.activity.VnptIdentityActivity
-import com.vnptit.idg.sdk.utils.KeyIntentConstants
-import com.vnptit.idg.sdk.utils.KeyResultConstants
-import com.vnptit.idg.sdk.utils.SDKEnum
+import com.vnptit.nfc.activity.VnptScanNFCActivity
+import com.vnptit.nfc.utils.KeyIntentConstantsNFC
+import com.vnptit.nfc.utils.KeyResultConstantsNFC
 import io.flutter.embedding.android.FlutterFragmentActivity
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
@@ -73,45 +72,26 @@ class VnptEkycPlugin : FlutterPlugin, ActivityAware, ActivityResultListener, Vnp
         language: String,
         callback: (Result<Map<String, Any?>>) -> Unit
     ) {
-        val intent = Intent(
-            this.activity,
-            VnptIdentityActivity::class.java
-        )
+        val intent: Intent = Intent(this, VnptScanNFCActivity::class.java)
 
-        intent.putExtra(KeyIntentConstants.ACCESS_TOKEN, accessToken)
-        intent.putExtra(KeyIntentConstants.TOKEN_ID, tokenId)
-        intent.putExtra(KeyIntentConstants.TOKEN_KEY, tokenKey)
-        intent.putExtra(
-            KeyIntentConstants.DOCUMENT_TYPE,
-            SDKEnum.DocumentTypeEnum.IDENTITY_CARD.value
-        )
-        intent.putExtra(KeyIntentConstants.VERSION_SDK, SDKEnum.VersionSDKEnum.ADVANCED.getValue())
+        intent.putExtra(KeyIntentConstantsNFC.ACCESS_TOKEN, accessToken)
+        intent.putExtra(KeyIntentConstantsNFC.TOKEN_ID, tokenId)
+        intent.putExtra(KeyIntentConstantsNFC.TOKEN_KEY, tokenKey)
 
-        intent.putExtra(KeyIntentConstants.IS_SHOW_TUTORIAL, true)
-        intent.putExtra(KeyIntentConstants.IS_ENABLE_GOT_IT, true)
-        intent.putExtra(KeyIntentConstants.IS_SHOW_SWITCH_CAMERA, true)
-        intent.putExtra(KeyIntentConstants.IS_ENABLE_SCAN_QR, true)
-        intent.putExtra(KeyIntentConstants.IS_CHECK_LIVENESS_CARD, true)
-        intent.putExtra(KeyIntentConstants.IS_VALIDATE_POSTCODE, true)
-        intent.putExtra(KeyIntentConstants.IS_ENABLE_SCAN_QR, true)
-
-        intent.putExtra(
-            KeyIntentConstants.TYPE_VALIDATE_DOCUMENT,
-            SDKEnum.TypeValidateDocument.Basic.value
-        )
-        intent.putExtra(KeyIntentConstants.CHALLENGE_CODE, "INNOVATIONCENTER")
+        intent.putExtra(KeyIntentConstantsNFC.ACCESS_TOKEN, "")
+        intent.putExtra(KeyIntentConstantsNFC.TOKEN_ID, "")
+        intent.putExtra(KeyIntentConstantsNFC.TOKEN_KEY, "")
+        intent.putExtra(KeyIntentConstantsNFC.IS_ENABLE_UPLOAD_IMAGE, false)
+        intent.putExtra(KeyIntentConstantsNFC.IS_ENABLE_MAPPING_ADDRESS, false)
+//        intent.putExtra(KeyIntentConstantsNFC.ID_NUMBER_CARD, "")
+//        intent.putExtra(KeyIntentConstantsNFC.CLIENT_SESSION_NFC, "")
+//        intent.putExtra(KeyIntentConstantsNFC.BIRTHDAY_CARD, "970902")
+//        intent.putExtra(KeyIntentConstantsNFC.EXPIRED_CARD, "370902")
 
         reloadLanguage(language)
         when (language) {
-            "vi" -> intent.putExtra(
-                KeyIntentConstants.LANGUAGE_SDK,
-                SDKEnum.LanguageEnum.VIETNAMESE.value
-            )
-
-            else -> intent.putExtra(
-                KeyIntentConstants.LANGUAGE_SDK,
-                SDKEnum.LanguageEnum.ENGLISH.value
-            )
+            "vi" -> intent.putExtra(KeyIntentConstantsNFC.LANGUAGE_NFC, "vi")
+            else -> intent.putExtra(KeyIntentConstantsNFC.LANGUAGE_NFC, "en")
         }
 
         startActivityForResult(activity!!, intent, 1, null)
@@ -121,25 +101,26 @@ class VnptEkycPlugin : FlutterPlugin, ActivityAware, ActivityResultListener, Vnp
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean {
         val result: Result<Map<String, Any?>>?
         if (requestCode == 1 && resultCode == FlutterFragmentActivity.RESULT_OK) {
-            val strDataInfo = data?.getStringExtra(KeyResultConstants.INFO_RESULT)
-            val strDataCompare = data?.getStringExtra(KeyResultConstants.COMPARE_RESULT)
+            val personalInformation = data?.getStringExtra(KeyResultConstantsNFC.PERSONAL_INFORMATION)
+//            val avatarPath = data?.getStringExtra(KeyResultConstantsNFC.IMAGE_AVATAR_CARD_NFC)
+            val logNFC = data?.getStringExtra(KeyResultConstantsNFC.LOG_NFC)
 
-            println("strDataInfo: $strDataInfo")
-            println("strDataCompare: $strDataCompare")
+            println("personalInformation: $personalInformation")
+            println("logNFC: $logNFC")
 
-            if (strDataInfo == null || strDataCompare == null) {
+            if (personalInformation == null || logNFC == null) {
                 result = Result.success(
                     mapOf(
-                        "data_info" to null,
-                        "data_compare" to null,
+                        "personal_information" to null,
+                        "log_nfc" to null,
                         "error" to "cancel by user",
                     )
                 )
             } else {
                 result = Result.success(
                     mapOf(
-                        "data_info" to strDataInfo,
-                        "data_compare" to strDataCompare,
+                        "personal_information" to personalInformation,
+                        "log_nfc" to logNFC,
                     )
                 )
             }
