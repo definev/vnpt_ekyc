@@ -26,7 +26,7 @@ class VnptEkycPlugin : FlutterPlugin, ActivityAware, ActivityResultListener, Vnp
     private lateinit var channel: MethodChannel
     var activity: Activity? = null
 
-    var ekycCompletionCallback: ((Result<Map<String, Any?>>) -> Unit)? = null
+    var ekycCompletionCallback: ((Result<Map<String, String?>>) -> Unit)? = null
 
     override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
         VnptEkycPigeon.setUp(flutterPluginBinding.binaryMessenger, this)
@@ -65,14 +65,16 @@ class VnptEkycPlugin : FlutterPlugin, ActivityAware, ActivityResultListener, Vnp
         )
     }
 
+
     override fun ekyc(
         accessToken: String,
         tokenId: String,
         tokenKey: String,
         language: String,
-        callback: (Result<Map<String, Any?>>) -> Unit
+        callback: (Result<Map<String, String?>>) -> Unit
     ) {
-        val intent: Intent = Intent(this, VnptScanNFCActivity::class.java)
+
+        val intent: Intent = Intent(activity, VnptScanNFCActivity::class.java)
 
         intent.putExtra(KeyIntentConstantsNFC.ACCESS_TOKEN, accessToken)
         intent.putExtra(KeyIntentConstantsNFC.TOKEN_ID, tokenId)
@@ -99,7 +101,7 @@ class VnptEkycPlugin : FlutterPlugin, ActivityAware, ActivityResultListener, Vnp
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean {
-        val result: Result<Map<String, Any?>>?
+        val result: Result<Map<String, String?>>?
         if (requestCode == 1 && resultCode == FlutterFragmentActivity.RESULT_OK) {
             val personalInformation = data?.getStringExtra(KeyResultConstantsNFC.PERSONAL_INFORMATION)
 //            val avatarPath = data?.getStringExtra(KeyResultConstantsNFC.IMAGE_AVATAR_CARD_NFC)

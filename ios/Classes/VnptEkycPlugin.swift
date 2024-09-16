@@ -2,10 +2,9 @@ import Flutter
 import UIKit
 
 #if !targetEnvironment(simulator)
-    import ICSdkEKYC
-    import eKYCLib
+    import ICNFCCardReader
 
-    public class VnptEkycPlugin: NSObject, FlutterPlugin, VnptEkycPigeon, ICEkycCameraDelegate {
+    public class VnptEkycPlugin: NSObject, FlutterPlugin, VnptEkycPigeon {
         public static func register(with registrar: FlutterPluginRegistrar) {
             let instance = VnptEkycPlugin()
             VnptEkycPigeonSetup.setUp(binaryMessenger: registrar.messenger(), api: instance)
@@ -39,56 +38,48 @@ import UIKit
                 Result<[String: String?], any Error>
             ) -> Void
         ) {
+            let objICMainNFCReader = ICMainNFCReaderRouter.createModule() as!
+            ICMainNFCReaderViewController
+            objICMainNFCReader.icMainNFCDelegate = self
+            // Nhập thông tin bộ mã truy cập.
+            // Lấy tại mục Quản lý Token
+            // https://ekyc.vnpt.vn/admin-dashboard/console/project-manager
+            // Bộ token của NFC
+            objICMainNFCReader.accessToken = accessToken
+            objICMainNFCReader.tokenId = tokenId
+            objICMainNFCReader.tokenKey = tokenKey
+            // Bộ token của eKYC (dùng để upload ảnh, postcode nếu có)
+            objICMainNFCReader.accessTokenEKYC = accessToken
+            objICMainNFCReader.tokenIdEKYC = tokenId
+            objICMainNFCReader.tokenKeyEKYC = tokenKey
+            // Thuộc tính xác định bước quét thông tin thẻ căn cước
+            objICMainNFCReader.cardReaderStep = QRCode
+            // Ngôn ngữ SDK
+            objICMainNFCReader.languageSdk = "icnfc_\(language)"
 
-            ICEKYCSavedData.shared().tokenId = tokenId
-            ICEKYCSavedData.shared().tokenKey = tokenKey
-            ICEKYCSavedData.shared().authorization = accessToken
-
+            objICMainNFCReader.modalPresentationStyle = .fullScreen
+            objICMainNFCReader.modalTransitionStyle = .coverVertical
+            
             guard let controller = viewController(with: nil) else { return }
+            controller.present(objICMainNFCReader, animated: true, completion: nil)
 
             ekycCompletion = completion
-
-            let objCamera = ICEkycCameraRouter.createModule() as! ICEkycCameraViewController
-
-            objCamera.versionSdk = ProOval
-            objCamera.flowType = full
-            objCamera.documentType = IdentityCard
-            objCamera.cameraDelegate = self
-
-            // objCamera.arrayItemPostCode = [] as Array<PostCodeType>
-            // objCamera.unitCustomer = "test1" // bỏ thuộc tính này
-            // objCamera.resourceCustomer = "VNPT" // bỏ thuộc tính này
-            objCamera.challengeCode = "INNOVATIONCENTER"
-
-            // objCamera.isShowResult = false // bỏ thuộc tính này
-            objCamera.isShowTutorial = true // đổi từ isShowHelp sang isShowTutorial
-            objCamera.isShowTrademark = false
-            objCamera.isCheckLivenessCard = true
-            objCamera.isEnableCompare = true
-            objCamera.isCheckMaskedFace = true
-            // objCamera.isAddFace = true // bỏ thuộc tính này
-            objCamera.languageSdk = "icekyc_\(language)"
-            objCamera.isValidatePostcode = true
-
-            objCamera.modalPresentationStyle = .fullScreen
-            objCamera.modalTransitionStyle = .coverVertical
-
-            controller.present(objCamera, animated: true, completion: nil)
         }
+    }
 
-        public func icEkycGetResult() {
-            let data = ICEKYCSavedData.shared()
-
-            ekycCompletion?(Result.success([
-                "data_info": data.ocrResult,
-                "data_compare": data.compareFaceResult,
-            ]))
-            ekycCompletion = nil
+    extension VnptEkycPlugin: ICMainNFCReaderDelegate {
+        public func icNFCMainDismissed(_ lastStep: ICNFCLastStep) {
+            // Đã đóng SDK
         }
-
-        public func icEkycCameraClosed(with type: ScreenType) {
-            ekycCompletion?(Result.success(["error": "cancel by user"]))
-            ekycCompletion = nil
+        public func icNFCPopupReaderChipDisappear() {
+            // Popup đọc NFC đã tắt
+        }
+        public func icNFCCardReaderGetResult() {
+            // In dữ liệu sau khi SDK trả về
+            print("icNFCResultAvatar = \(ICNFCSaveData.shared().imageAvatar)")
+            print("dataGroups = \(ICNFCSaveData.shared().imageAvatar)")
+        }
+        public func icNFCCardReader(_ state: ICNFCReaderState, progress: Int, error: String) {
         }
     }
 

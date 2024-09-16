@@ -49,3 +49,5 @@
 -keepclassmembers class net.sf.scuba.smartcards.IsoDepCardService** {
 *;
 }
+
+-keep class com.gemalto.jp2.** { *; }
