@@ -59,7 +59,7 @@ import UIKit
 
             objICMainNFCReader.modalPresentationStyle = .fullScreen
             objICMainNFCReader.modalTransitionStyle = .coverVertical
-            
+
             guard let controller = viewController(with: nil) else { return }
             controller.present(objICMainNFCReader, animated: true, completion: nil)
 
@@ -70,14 +70,21 @@ import UIKit
     extension VnptEkycPlugin: ICMainNFCReaderDelegate {
         public func icNFCMainDismissed(_ lastStep: ICNFCLastStep) {
             // Đã đóng SDK
+            print("Close popup")
+            print("dataGroups = \(ICNFCSaveData.shared().scanQRCodeResult)")
+            print("icNFCResultAvatar = \(ICNFCSaveData.shared().dataNFCResult)")
         }
         public func icNFCPopupReaderChipDisappear() {
             // Popup đọc NFC đã tắt
+            print("Close popup 1")
+            print("dataGroups = \(ICNFCSaveData.shared().scanQRCodeResult)")
+            print("icNFCResultAvatar = \(ICNFCSaveData.shared().dataNFCResult)")
         }
         public func icNFCCardReaderGetResult() {
+            print("Close popup 2")
             // In dữ liệu sau khi SDK trả về
-            print("icNFCResultAvatar = \(ICNFCSaveData.shared().imageAvatar)")
-            print("dataGroups = \(ICNFCSaveData.shared().imageAvatar)")
+            print("dataGroups = \(ICNFCSaveData.shared().scanQRCodeResult)")
+            print("icNFCResultAvatar = \(ICNFCSaveData.shared().dataNFCResult)")
         }
         public func icNFCCardReader(_ state: ICNFCReaderState, progress: Int, error: String) {
         }

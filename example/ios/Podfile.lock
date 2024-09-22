@@ -2,13 +2,19 @@ PODS:
   - Flutter (1.0.0)
   - integration_test (0.0.1):
     - Flutter
+  - OpenSSL-Universal (3.3.1000)
   - vnpt_ekyc (0.0.1):
     - Flutter
+    - OpenSSL-Universal
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
   - integration_test (from `.symlinks/plugins/integration_test/ios`)
   - vnpt_ekyc (from `.symlinks/plugins/vnpt_ekyc/ios`)
+
+SPEC REPOS:
+  trunk:
+    - OpenSSL-Universal
 
 EXTERNAL SOURCES:
   Flutter:
@@ -21,7 +27,8 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
   integration_test: 252f60fa39af5e17c3aa9899d35d908a0721b573
-  vnpt_ekyc: a6427526e46ba146f44fe4ef55a2125187b5cb59
+  OpenSSL-Universal: 57f92a826947ee3183556bf5e22d7dff8d55f834
+  vnpt_ekyc: 348525cf2b54ce1a3f45d6c732f7a265a2292327
 
 PODFILE CHECKSUM: 819463e6a0290f5a72f145ba7cde16e8b6ef0796
 

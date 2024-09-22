@@ -15,6 +15,7 @@ A new Flutter plugin project.
   s.source           = { :path => '.' }
   s.source_files = 'Classes/**/*'
   s.dependency 'Flutter'
+  s.dependency 'OpenSSL-Universal'
   s.platform = :ios, '13.0'
 
   # Flutter.framework does not contain a i386 slice.
@@ -22,9 +23,9 @@ A new Flutter plugin project.
   s.swift_version = '5.0'
 
   # Dependencies
-  s.preserve_paths = 'Frameworks/ICNFCCardReader.xcframework/**/*', 'Frameworks/OpenSSL.xcframework/**/*'
-  s.xcconfig = { 'OTHER_LDFLAGS' => '-framework ICNFCCardReader -framework OpenSSL' }
-  s.vendored_frameworks = 'Frameworks/ICNFCCardReader.xcframework', 'Frameworks/OpenSSL.xcframework'
+  s.preserve_paths = 'Frameworks/ICNFCCardReader.xcframework/**/*'
+  s.xcconfig = { 'OTHER_LDFLAGS' => '-framework ICNFCCardReader' }
+  s.vendored_frameworks = 'Frameworks/ICNFCCardReader.xcframework'
 
   # If your plugin requires a privacy manifest, for example if it uses any
   # required reason APIs, update the PrivacyInfo.xcprivacy file to describe your
