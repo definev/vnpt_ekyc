@@ -18,6 +18,8 @@ import java.util.Locale
 
 /** VnptEkycPlugin */
 class VnptEkycPlugin : FlutterPlugin, ActivityAware, ActivityResultListener, VnptEkycPigeon {
+    val REQUEST_CODE: Int = 30
+
     var activity: Activity? = null
 
     private var ekycCompletionCallback: ((Result<Map<String, String?>>) -> Unit)? = null
@@ -77,15 +79,11 @@ class VnptEkycPlugin : FlutterPlugin, ActivityAware, ActivityResultListener, Vnp
         intent.putExtra(KeyIntentConstantsNFC.TOKEN_ID, tokenId)
         intent.putExtra(KeyIntentConstantsNFC.TOKEN_KEY, tokenKey)
 
-        intent.putExtra(KeyIntentConstantsNFC.ACCESS_TOKEN, "")
-        intent.putExtra(KeyIntentConstantsNFC.TOKEN_ID, "")
-        intent.putExtra(KeyIntentConstantsNFC.TOKEN_KEY, "")
+        intent.putExtra(KeyIntentConstantsNFC.ACCESS_TOKEN, accessToken)
+        intent.putExtra(KeyIntentConstantsNFC.TOKEN_ID, tokenId)
+        intent.putExtra(KeyIntentConstantsNFC.TOKEN_KEY, tokenKey)
         intent.putExtra(KeyIntentConstantsNFC.IS_ENABLE_UPLOAD_IMAGE, false)
         intent.putExtra(KeyIntentConstantsNFC.IS_ENABLE_MAPPING_ADDRESS, false)
-//        intent.putExtra(KeyIntentConstantsNFC.ID_NUMBER_CARD, "")
-//        intent.putExtra(KeyIntentConstantsNFC.CLIENT_SESSION_NFC, "")
-//        intent.putExtra(KeyIntentConstantsNFC.BIRTHDAY_CARD, "970902")
-//        intent.putExtra(KeyIntentConstantsNFC.EXPIRED_CARD, "370902")
 
         reloadLanguage(language)
         when (language) {
@@ -93,40 +91,54 @@ class VnptEkycPlugin : FlutterPlugin, ActivityAware, ActivityResultListener, Vnp
             else -> intent.putExtra(KeyIntentConstantsNFC.LANGUAGE_NFC, "en")
         }
 
-        startActivityForResult(activity!!, intent, 1, null)
+        startActivityForResult(activity!!, intent, REQUEST_CODE, null)
         ekycCompletionCallback = callback
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean {
         val result: Result<Map<String, String?>>?
-        if (requestCode == 1 && resultCode == FlutterFragmentActivity.RESULT_OK) {
-            val qrCode = data?.getStringExtra(KeyResultConstantsNFC.QR_CODE_RESULT_NFC)
-            val avatar = data?.getStringExtra(KeyResultConstantsNFC.IMAGE_AVATAR_CARD_NFC)
-            val logNFC = data?.getStringExtra(KeyResultConstantsNFC.LOG_NFC)
+        if (requestCode == REQUEST_CODE) {
 
-            println("personalInformation: $qrCode")
-            println("logNFC: $logNFC")
+            if (resultCode == FlutterFragmentActivity.RESULT_OK) {
+                val qrCode = data?.getStringExtra(KeyResultConstantsNFC.QR_CODE_RESULT_NFC)
+                val avatar = data?.getStringExtra(KeyResultConstantsNFC.IMAGE_AVATAR_CARD_NFC)
+                val logNFC = data?.getStringExtra(KeyResultConstantsNFC.LOG_NFC)
 
-            if (qrCode == null || logNFC == null || avatar == null) {
+                println("personalInformation: $qrCode")
+                println("logNFC: $logNFC")
+
+                if (qrCode == null || logNFC == null || avatar == null) {
+                    result = Result.success(
+                        mapOf(
+                            "qr_code" to null,
+                            "log_nfc" to null,
+                            "avatar" to null,
+                            "error" to "cancelled",
+                        )
+                    )
+                } else {
+                    result = Result.success(
+                        mapOf(
+                            "qr_code" to qrCode,
+                            "log_nfc" to logNFC,
+                            "avatar" to avatar,
+                        )
+                    )
+                }
+                ekycCompletionCallback?.invoke(result)
+                return true
+            } else {
                 result = Result.success(
                     mapOf(
                         "qr_code" to null,
                         "log_nfc" to null,
                         "avatar" to null,
-                        "error" to "cancel by user",
+                        "error" to "cancelled",
                     )
                 )
-            } else {
-                result = Result.success(
-                    mapOf(
-                        "qr_code" to qrCode,
-                        "log_nfc" to logNFC,
-                        "avatar" to avatar,
-                    )
-                )
+                ekycCompletionCallback?.invoke(result)
+                return false
             }
-            ekycCompletionCallback?.invoke(result)
-            return true
         }
 
         return false
