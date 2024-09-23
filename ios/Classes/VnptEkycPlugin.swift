@@ -67,73 +67,59 @@ import UIKit
         }
     }
 
-extension VnptEkycPlugin: ICMainNFCReaderDelegate {
-    public func icNFCMainDismissed(_ lastStep: ICNFCLastStep) {
-        // Đã đóng SDK
-        print("Close popup")
-        print("dataGroups = \(ICNFCSaveData.shared().scanQRCodeResult)")
-        print("icNFCResultAvatar = \(ICNFCSaveData.shared().dataNFCResult)")
-        let dictionary: [String: Any] = ICNFCSaveData.shared().dataNFCResult
-        
-        do {
-            let jsonData = try JSONSerialization.data(withJSONObject: dictionary, options: .prettyPrinted)
-            if let nfcString = String(data: jsonData, encoding: .utf8) {
+    extension VnptEkycPlugin: ICMainNFCReaderDelegate {
+        public func responseNfcResult() {
+            let logNfc: [String: Any] = ICNFCSaveData.shared().dataNFCResult
+            let qrCode = ICNFCSaveData.shared().scanQRCodeResult
+            let avatar = ICNFCSaveData.shared().hashImageAvatar
+
+            if qrCode.isEmpty {
                 ekycCompletion?(
                     Result.success([
-                        "qr": ICNFCSaveData.shared().scanQRCodeResult,
-                        "nfc": nfcString
+                        "qr_code": nil,
+                        "log_nfc": nil,
+                        "avatar": nil,
+                        "error": "cancelled by user",
+                    ])
+                )
+                return
+            }
+
+            do {
+                let jsonData = try JSONSerialization.data(withJSONObject: logNfc, options: .prettyPrinted)
+                if let logNfc = String(data: jsonData, encoding: .utf8) {
+                    ekycCompletion?(
+                        Result.success([
+                            "qr_code": qrCode,
+                            "log_nfc": logNfc,
+                            "avatar": avatar,
+                        ])
+                    )
+                }
+            } catch {
+                ekycCompletion?(
+                    Result.success([
+                        "qr_code": nil,
+                        "log_nfc": nil,
+                        "avatar": nil,
+                        "error": "cancelled by user",
                     ])
                 )
             }
-        } catch {
-            print("Error converting dictionary to JSON: \(error)")
+
+            ekycCompletion = nil
+        }
+
+        public func icNFCMainDismissed(_ lastStep: ICNFCLastStep) {
+            responseNfcResult()
+        }
+        public func icNFCPopupReaderChipDisappear() {
+            responseNfcResult()
+        }
+        public func icNFCCardReaderGetResult() {
+            responseNfcResult()
         }
     }
-    public func icNFCPopupReaderChipDisappear() {
-        // Popup đọc NFC đã tắt
-        print("Close popup 1")
-        print("dataGroups = \(ICNFCSaveData.shared().scanQRCodeResult)")
-        print("icNFCResultAvatar = \(ICNFCSaveData.shared().dataNFCResult)")
-        let dictionary: [String: Any] = ICNFCSaveData.shared().dataNFCResult
-        
-        do {
-            let jsonData = try JSONSerialization.data(withJSONObject: dictionary, options: .prettyPrinted)
-            if let nfcString = String(data: jsonData, encoding: .utf8) {
-                ekycCompletion?(
-                    Result.success([
-                        "qr": ICNFCSaveData.shared().scanQRCodeResult,
-                        "nfc": nfcString
-                    ])
-                )
-            }
-        } catch {
-            print("Error converting dictionary to JSON: \(error)")
-        }
-        
-    }
-    public func icNFCCardReaderGetResult() {
-        print("Close popup 2")
-        // In dữ liệu sau khi SDK trả về
-        print("dataGroups = \(ICNFCSaveData.shared().scanQRCodeResult)")
-        print("icNFCResultAvatar = \(ICNFCSaveData.shared().dataNFCResult)")
-        let dictionary: [String: Any] = ICNFCSaveData.shared().dataNFCResult
-        
-        do {
-            let jsonData = try JSONSerialization.data(withJSONObject: dictionary, options: .prettyPrinted)
-            if let nfcString = String(data: jsonData, encoding: .utf8) {
-                ekycCompletion?(
-                    Result.success([
-                        "qr": ICNFCSaveData.shared().scanQRCodeResult,
-                        "nfc": nfcString
-                    ])
-                )
-            }
-        } catch {
-            print("Error converting dictionary to JSON: \(error)")
-        }
-        
-    }
-}
 #else
 
     public class VnptEkycPlugin: NSObject, FlutterPlugin, VnptEkycPigeon {
