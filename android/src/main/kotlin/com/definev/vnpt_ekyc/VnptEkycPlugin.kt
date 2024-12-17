@@ -18,7 +18,7 @@ import java.util.Locale
 
 /** VnptEkycPlugin */
 class VnptEkycPlugin : FlutterPlugin, ActivityAware, ActivityResultListener, VnptEkycPigeon {
-    val REQUEST_CODE: Int = 30
+    private val REQUEST_CODE: Int = 30
 
     var activity: Activity? = null
 
@@ -79,16 +79,12 @@ class VnptEkycPlugin : FlutterPlugin, ActivityAware, ActivityResultListener, Vnp
         intent.putExtra(KeyIntentConstantsNFC.TOKEN_ID, tokenId)
         intent.putExtra(KeyIntentConstantsNFC.TOKEN_KEY, tokenKey)
 
-        intent.putExtra(KeyIntentConstantsNFC.ACCESS_TOKEN, accessToken)
-        intent.putExtra(KeyIntentConstantsNFC.TOKEN_ID, tokenId)
-        intent.putExtra(KeyIntentConstantsNFC.TOKEN_KEY, tokenKey)
         intent.putExtra(KeyIntentConstantsNFC.IS_ENABLE_UPLOAD_IMAGE, false)
-        intent.putExtra(KeyIntentConstantsNFC.IS_ENABLE_MAPPING_ADDRESS, false)
 
         reloadLanguage(language)
         when (language) {
-            "vi" -> intent.putExtra(KeyIntentConstantsNFC.LANGUAGE_NFC, "vi")
-            else -> intent.putExtra(KeyIntentConstantsNFC.LANGUAGE_NFC, "en")
+            "vi" -> intent.putExtra(KeyIntentConstantsNFC.LANGUAGE_SDK, "vi")
+            else -> intent.putExtra(KeyIntentConstantsNFC.LANGUAGE_SDK, "en")
         }
 
         startActivityForResult(activity!!, intent, REQUEST_CODE, null)
@@ -100,14 +96,14 @@ class VnptEkycPlugin : FlutterPlugin, ActivityAware, ActivityResultListener, Vnp
         if (requestCode == REQUEST_CODE) {
 
             if (resultCode == FlutterFragmentActivity.RESULT_OK) {
-                val qrCode = data?.getStringExtra(KeyResultConstantsNFC.QR_CODE_RESULT_NFC)
-                val avatar = data?.getStringExtra(KeyResultConstantsNFC.IMAGE_AVATAR_CARD_NFC)
-                val logNFC = data?.getStringExtra(KeyResultConstantsNFC.LOG_NFC)
+                val qrCode = data?.getStringExtra(KeyResultConstantsNFC.QR_CODE_RESULT)
+                val avatar = data?.getStringExtra(KeyResultConstantsNFC.HASH_IMAGE_AVATAR)
+                val logNFC = data?.getStringExtra(KeyResultConstantsNFC.DATA_NFC_RESULT)
 
                 println("personalInformation: $qrCode")
                 println("logNFC: $logNFC")
 
-                if (qrCode == null || logNFC == null || avatar == null) {
+                if (qrCode == null) {
                     result = Result.success(
                         mapOf(
                             "qr_code" to null,
@@ -133,7 +129,7 @@ class VnptEkycPlugin : FlutterPlugin, ActivityAware, ActivityResultListener, Vnp
                         "qr_code" to null,
                         "log_nfc" to null,
                         "avatar" to null,
-                        "error" to "cancelled",
+                        "error" to "invalid result code",
                     )
                 )
                 ekycCompletionCallback?.invoke(result)

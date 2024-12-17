@@ -74,14 +74,7 @@ import UIKit
             let avatar = ICNFCSaveData.shared().hashImageAvatar
 
             if qrCode.isEmpty {
-                ekycCompletion?(
-                    Result.success([
-                        "qr_code": nil,
-                        "log_nfc": nil,
-                        "avatar": nil,
-                        "error": "cancelled by user",
-                    ])
-                )
+                ekycCompletion?(Result.failure(PigeonError(code: "500", message: "QR code not found", details: nil)))
                 return
             }
 
@@ -97,25 +90,24 @@ import UIKit
                     )
                 }
             } catch {
-                ekycCompletion?(
-                    Result.success([
-                        "qr_code": nil,
-                        "log_nfc": nil,
-                        "avatar": nil,
-                        "error": "cancelled by user",
-                    ])
-                )
+                ekycCompletion?(Result.failure(PigeonError(code: "500", message: error.localizedDescription, details: nil)))
             }
 
             ekycCompletion = nil
         }
 
         public func icNFCMainDismissed(_ lastStep: ICNFCLastStep) {
-            responseNfcResult()
+            switch lastStep {
+            case ICNFCReaderNFC:
+                responseNfcResult()
+            default:
+                ekycCompletion?(Result.failure(PigeonError(code: "400", message: "Cancel", details: nil)))
+            }
         }
+        
         public func icNFCPopupReaderChipDisappear() {
-            responseNfcResult()
         }
+        
         public func icNFCCardReaderGetResult() {
             responseNfcResult()
         }
